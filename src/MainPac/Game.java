@@ -1,4 +1,4 @@
- /** This program is free software; you can redistribute it and/or modify
+/* This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
@@ -9,12 +9,11 @@
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- *this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
- *Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+ * Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * 
  * Copyright (C) 2019 Mihail Harisov
- * */
-
+ */
 
 package MainPac;
 
@@ -99,9 +98,6 @@ public class Game extends JPanel implements ActionListener{
 				
 			}
 		});
-		for(int i = 0; i < SIZEX/DOT_SIZE; i++) {
-			wall[19][i] = new Dot((i) * DOT_SIZE, SIZEY - DOT_SIZE, new Color(9, 70 ,76));
-		}
 		System.out.println("Loading images");
 		loadImages();
 		System.out.println("Starting");
@@ -112,12 +108,37 @@ public class Game extends JPanel implements ActionListener{
 		repaint();
 	}
 	
+	
+	
+	
 	public void start() {
+		for(int i = 0; i < SIZEX/DOT_SIZE; i++) { //init floor
+			wall[19][i] = new Dot((i) * DOT_SIZE, SIZEY - DOT_SIZE, new Color(9, 70 ,76));
+		}
 		timer = new Timer(Tetris.pref.level.speed, this);
 		inGame = true;
 		timer.start();
 		fps.start();
 		initDot(5);
+	}
+	
+	public void gameExit() {
+		timer.stop();
+		fps.stop();
+		this.flushDots();
+		inGame = false;
+		score = 0;
+	}
+	
+	private void flushDots() {
+		int wallX = 20;
+		int wallY = 15;
+		
+		for(int i = wallX - 1 ; i >= 0; i--) {
+			for(int j = wallY - 1; j >= 0; j--) {
+				wall[i][j] = null;
+			}
+		}
 	}
 	
 	private  void initDot(int c){

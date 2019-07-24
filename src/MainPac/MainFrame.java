@@ -1,4 +1,4 @@
- /** This program is free software; you can redistribute it and/or modify
+/* This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
@@ -9,11 +9,11 @@
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- *this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
- *Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+ * Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * 
  * Copyright (C) 2019 Mihail Harisov
- * */
+ */
 
 package MainPac;
 
@@ -22,29 +22,26 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.TreeSet;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-
 public class MainFrame extends JFrame {                       //It's Main window which contains all containers!
 	Game game; 
 	SettingsContainer setCon;
 	RightContainer righCon;
 	MiddleContainer midCon;
+	
 	MainFrame(Dimension mainSize){
 		Container con = new Container();                                       //main container
 		game = new Game(this, con);
@@ -59,6 +56,7 @@ public class MainFrame extends JFrame {                       //It's Main window
 		setLocationRelativeTo(null);
 		setBackground(Tetris.pref.mainBackColor);
 		setContentPane(con);
+		
 		con.add(setCon);                                              //add into container
 		con.add(righCon);
 		con.add(midCon);
@@ -70,7 +68,7 @@ public class MainFrame extends JFrame {                       //It's Main window
 	}	
 
 
-	class MiddleContainer extends Container {              // middle container!!!
+	class MiddleContainer extends Container {              // Middle container!!!
 		MyButton start, settings, aboute;
 		//MyLable theme, difficult;
 		Container thisCon = this;
@@ -92,7 +90,7 @@ public class MainFrame extends JFrame {                       //It's Main window
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					thisCon.setVisible(false);
+					midCon.setVisible(false);
 					righCon.setVisible(true);
 					game.start();
 				}
@@ -111,13 +109,16 @@ public class MainFrame extends JFrame {                       //It's Main window
 		}
 	}
 	
-	class RightContainer extends Container {                   //Right container!!!
+	class RightContainer extends Container {                   //Right container
 		MyButton pauseBut = new MyButton("/pause.png", new Dimension(100, 50));
+		MyButton exitBut = new MyButton("/pause.png", new Dimension(100, 50));
+		Container thisCon = this;
 		
 		RightContainer(){
 			add(pauseBut);
+			add(exitBut);
 			setSize((Tetris.pref.mainDimen.width - Tetris.pref.gameDimen.width)/2, 640);
-			pauseBut.setLocation((getSize().width - 100)/2, 100);
+			pauseBut.setLocation((getSize().width - 100)/2, 100); //pause button preference
 			pauseBut.addActionListener(new ActionListener() {
 				boolean flagPress = false;
 				
@@ -133,6 +134,19 @@ public class MainFrame extends JFrame {                       //It's Main window
 						flagPress = true;
 					}
 				}
+			});
+			
+			exitBut.setLocation((getSize().width - 100)/2, 200);
+			exitBut.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					game.gameExit();
+					midCon.setVisible(true);
+					righCon.setVisible(false);
+				}
+					
+				
 			});
 			setVisible(false);
 		}
