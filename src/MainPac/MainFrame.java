@@ -21,7 +21,9 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -29,6 +31,9 @@ import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.TreeSet;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -41,6 +46,7 @@ public class MainFrame extends JFrame {                       //It's Main window
 	SettingsContainer setCon;
 	RightContainer righCon;
 	MiddleContainer midCon;
+	AboutContainer aboutCon;
 	
 	MainFrame(Dimension mainSize){
 		Container con = new Container();                                       //main container
@@ -48,6 +54,7 @@ public class MainFrame extends JFrame {                       //It's Main window
 		setCon = new SettingsContainer();
 		righCon = new RightContainer();
 		midCon = new MiddleContainer();
+		aboutCon = new AboutContainer();
 		
 		setTitle("Tetris the game");                                    //set frame settings
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -60,7 +67,9 @@ public class MainFrame extends JFrame {                       //It's Main window
 		con.add(setCon);                                              //add into container
 		con.add(righCon);
 		con.add(midCon);
+		con.add(aboutCon);
 		con.add(game);
+		
 		
 		game.setSize(Tetris.pref.gameDimen);
 		game.setLocation(((this.getWidth() - game.getWidth())/2), 0);
@@ -69,21 +78,22 @@ public class MainFrame extends JFrame {                       //It's Main window
 
 
 	class MiddleContainer extends Container {              // Middle container!!!
-		MyButton start, settings, aboute;
+		MyButton start, settings, about;
 		//MyLable theme, difficult;
 		Container thisCon = this;
 		
 		MiddleContainer(){
 			start = new MyButton("/start.png", new Dimension(300,100));  
-			settings = new MyButton("/settings.png", new Dimension(300, 100));
+			settings = new MyButton("/settings.png", new Dimension(300, 80));
+			about = new MyButton("/about.png", new Dimension(200, 60));
 			
 			//difficult = new MyLable("difficult");
 			
 			setSize(736,680);
 			add(start);
 			add(settings);	
+			add(about);
 			
-			//add(aboute);
 			
 			start.setLocation(((getWidth() / 2) - (start.getWidth()/2)), 110); //start button preference;
 			start.addActionListener(new ActionListener() {
@@ -105,13 +115,24 @@ public class MainFrame extends JFrame {                       //It's Main window
 					setCon.setVisible(true);
 				}
 			});
+			
+			about.setLocation(((getWidth() / 2) - (about.getWidth()/2)), 380);
+			about.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					midCon.setVisible(false);
+					setCon.setVisible(false);
+					aboutCon.setVisible(true);
+				}
+			});
 			setVisible(true);
 		}
 	}
 	
 	class RightContainer extends Container {                   //Right container
-		MyButton pauseBut = new MyButton("/pause.png", new Dimension(100, 50));
-		MyButton exitBut = new MyButton("/pause.png", new Dimension(100, 50));
+		MyButton pauseBut = new MyButton("/pause.png", new Dimension(110, 50), 80, 50);
+		MyButton exitBut = new MyButton("/exit.png", new Dimension(100, 50), 80, 60);
 		Container thisCon = this;
 		
 		RightContainer(){
@@ -153,6 +174,97 @@ public class MainFrame extends JFrame {                       //It's Main window
 		
 	}
 	
+	class AboutContainer extends Container{
+		MyButton gitHub;
+		MyButton twitter;
+		MyButton repository;
+		MyButton back;
+		Label copy;
+		Image mascot;
+		
+		public AboutContainer() {
+			gitHub = new MyButton("/GitHub.png", new Dimension(200, 60));
+			twitter = new MyButton("/twitter.png", new Dimension(200, 60),85,60);
+			repository = new MyButton("/repository.png", new Dimension(220, 60),80, 60);
+			back = new MyButton("/back.png", new Dimension(100, 50));
+			 
+			setSize(480,680);
+			setVisible(false);
+			setLocation((Tetris.pref.mainDimen.width - 480)/2, 0);
+			add(gitHub);
+			add(twitter);
+			add(repository);
+			add(back);
+			gitHub.setLocation(260, 200);
+			gitHub.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					try {
+						Tetris.openWebpage(new URL("https://github.com/CreatorHRS"));
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+			});
+			 
+			twitter.setLocation(260, 280);
+			twitter.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						try {
+							Tetris.openWebpage(new URL("https://twitter.com/CreatorHRS"));
+						} catch (MalformedURLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+					}
+			});
+			
+			repository.setLocation((Tetris.pref.gameDimen.width - 220) / 2, 380);
+			repository.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					try {
+						Tetris.openWebpage(new URL("https://github.com/CreatorHRS/TetrisTheGame"));
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+			});
+			
+			back.setLocation(200, 550);
+			back.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					aboutCon.setVisible(false);
+					midCon.setVisible(true);
+					
+				}
+				 
+			 });
+			 
+			 ImageIcon iia;
+			 iia = new ImageIcon(Tetris.pref.dir + "/Image1.png");
+			 mascot = iia.getImage();
+		}
+		public void paint(Graphics g) {
+			super.paint(g);
+			g.drawImage(mascot,0,100,256,256,this);
+			g.setFont(new Font("", 1, 20));
+			g.drawString("Copyright © 2019", 260, 150);
+			g.drawString("Mihail Harisov", 280, 180);
+		}
+	}
+	
 	class SettingsContainer extends Container {            //settings container!!!
 		Difficults dif = new Difficults();
 		Themes theme = new Themes();
@@ -162,7 +274,7 @@ public class MainFrame extends JFrame {                       //It's Main window
 		
 		
 		SettingsContainer() {
-			save = new MyButton(null, new Dimension(100, 50));
+			save = new MyButton("/save.png", new Dimension(100, 50));
 			themeLbl = new MyLable("Theme", 100);
 			difLbl = new MyLable("Difficult", 120);		
 			
@@ -202,6 +314,8 @@ public class MainFrame extends JFrame {                       //It's Main window
 	void update() {
 			dif.setSelectedIndex(Tetris.pref.level.index);
 	}
+	
+	
 	
 	class Themes extends JComboBox<String>{
 		Themes(){
@@ -276,12 +390,33 @@ class MyButton extends JButton{                           //Custom button class
 	Image im;
 	
 	MyButton(String imageLocation, Dimension d){
+		
 		setBorderPainted(true);
 		setFocusable(false);
 		setForeground(Tetris.pref.butForColor);
 		setBackground(Tetris.pref.butBackColor);
 		setSize(d);
+		
 		iia = new ImageIcon(Tetris.pref.dir +"/Themes"+ Tetris.pref.theme + "/Images" + imageLocation);
+		im = iia.getImage();
+		im = im.getScaledInstance(Tetris.persent(d.width, 80), Tetris.persent(d.height, 70), 0);
+		iia.setImage(im);
 		setIcon(iia);
 	}
+	
+	MyButton(String imageLocation, Dimension d, int widthPer, int heightPer){
+		
+		setBorderPainted(true);
+		setFocusable(false);
+		setForeground(Tetris.pref.butForColor);
+		setBackground(Tetris.pref.butBackColor);
+		setSize(d);
+		
+		iia = new ImageIcon(Tetris.pref.dir +"/Themes"+ Tetris.pref.theme + "/Images" + imageLocation);
+		im = iia.getImage();
+		im = im.getScaledInstance(Tetris.persent(d.width, widthPer), Tetris.persent(d.height, heightPer), 0);
+		iia.setImage(im);
+		setIcon(iia);
+	}
+	
 } 

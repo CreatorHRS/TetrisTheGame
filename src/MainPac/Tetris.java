@@ -22,7 +22,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -62,7 +64,35 @@ public class Tetris {
 	
 	static void changePref(String key, String value) {           
 		pref = Preference.initPref(pref.changePropPref(key, value), path);
-	} 
+	}
+	
+	public static int persent(int num, int pro) {
+		float res = (float)num / 100;
+		res = res * pro;
+		return (int)res;
+	}
+	
+	public static boolean openWebpage(URI uri) {
+	    Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+	    if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+	        try {
+	            desktop.browse(uri);
+	            return true;
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return false;
+	}
+
+	public static boolean openWebpage(URL url) {
+	    try {
+	        return openWebpage(url.toURI());
+	    } catch (URISyntaxException e) {
+	        e.printStackTrace();
+	    }
+	    return false;
+	}
  }
 
 class Preference{                                                 //Preference class
@@ -134,6 +164,7 @@ class Preference{                                                 //Preference c
 		return propPref;
 		
 	}
+	
 }
 
 enum Levl{                        

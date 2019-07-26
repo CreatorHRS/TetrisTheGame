@@ -127,6 +127,7 @@ public class Game extends JPanel implements ActionListener{
 		fps.stop();
 		this.flushDots();
 		inGame = false;
+		gameOverFlag = false;
 		score = 0;
 	}
 	

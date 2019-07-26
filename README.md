@@ -1,6 +1,6 @@
 # TetrisTheGame 
 
-Hello friend! 
+Hello friend!
 
 It is a simple java tetris. 
 If you want to practice to write java code or to unerstand someone else's code, 
@@ -10,8 +10,10 @@ _It's written with java jdk1.8._
 
 I know it contain not enough comments, but it use very clear variable's name. 
 
-***
+![](https://media.giphy.com/media/LjzV5bNP1VWzL7m3v1/giphy.gif)
 
+***
+## Structure
 File Tetris.java contains main method, so the program start in here. 
 It load Preferences from Pref.cfg then start main window. 
 
@@ -27,7 +29,7 @@ When one of them occur(except last) it check if a line is full.
 If it's true line is deleted and add 100 scors. 
 
 ***
-
+## License
   This program is free software; you can redistribute it and/or modify 
   it under the terms of the GNU General Public License as published by 
   the Free Software Foundation; either version 2, or (at your option) 
