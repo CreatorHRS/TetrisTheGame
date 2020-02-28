@@ -1,6 +1,6 @@
 # TetrisTheGame 
 
-Hello friend!
+Hello, friend!
 
 It is a simple java tetris. 
 If you want to practice to write java code or to unerstand someone else's code, 

@@ -12,7 +12,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * 
- * Copyright (C) 2019 Mihail Harisov
+ * Copyright (C) 2019-2020 Mihail Harisov
  */
 
 package MainPac;
@@ -48,7 +48,7 @@ public class MainFrame extends JFrame {                       //It's Main window
 	MiddleContainer midCon;
 	AboutContainer aboutCon;
 	
-	MainFrame(Dimension mainSize){
+	MainFrame(){
 		Container con = new Container();                                       //main container
 		game = new Game(this, con);
 		setCon = new SettingsContainer();
@@ -58,7 +58,7 @@ public class MainFrame extends JFrame {                       //It's Main window
 		
 		setTitle("Tetris the game");                                    //set frame settings
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(mainSize);
+		setSize(Tetris.pref.mainDimen);
 		setResizable(false);
 		setLocationRelativeTo(null);
 		setBackground(Tetris.pref.mainBackColor);
@@ -130,7 +130,7 @@ public class MainFrame extends JFrame {                       //It's Main window
 		}
 	}
 	
-	class RightContainer extends Container {                   //Right container
+	class RightContainer extends Container{                   //Right container
 		MyButton pauseBut = new MyButton("/pause.png", new Dimension(110, 50), 80, 50);
 		MyButton exitBut = new MyButton("/exit.png", new Dimension(100, 50), 80, 60);
 		Container thisCon = this;
@@ -177,7 +177,6 @@ public class MainFrame extends JFrame {                       //It's Main window
 	class AboutContainer extends Container{
 		MyButton gitHub;
 		MyButton twitter;
-		MyButton repository;
 		MyButton back;
 		Label copy;
 		Image mascot;
@@ -185,7 +184,6 @@ public class MainFrame extends JFrame {                       //It's Main window
 		public AboutContainer() {
 			gitHub = new MyButton("/GitHub.png", new Dimension(200, 60));
 			twitter = new MyButton("/twitter.png", new Dimension(200, 60),85,60);
-			repository = new MyButton("/repository.png", new Dimension(220, 60),80, 60);
 			back = new MyButton("/back.png", new Dimension(100, 50));
 			 
 			setSize(480,680);
@@ -193,7 +191,6 @@ public class MainFrame extends JFrame {                       //It's Main window
 			setLocation((Tetris.pref.mainDimen.width - 480)/2, 0);
 			add(gitHub);
 			add(twitter);
-			add(repository);
 			add(back);
 			gitHub.setLocation(260, 200);
 			gitHub.addActionListener(new ActionListener() {
@@ -223,21 +220,6 @@ public class MainFrame extends JFrame {                       //It's Main window
 						}
 						
 					}
-			});
-			
-			repository.setLocation((Tetris.pref.gameDimen.width - 220) / 2, 380);
-			repository.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					try {
-						Tetris.openWebpage(new URL("https://github.com/CreatorHRS/TetrisTheGame"));
-					} catch (MalformedURLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				}
 			});
 			
 			back.setLocation(200, 550);
@@ -342,7 +324,8 @@ public class MainFrame extends JFrame {                       //It's Main window
 		
 				@Override
 				public void itemStateChanged(ItemEvent e) {
-					Tetris.changePref("theme", e.getItem().toString());
+					Tetris.pref.theme = "/" + e.getItem().toString();
+					Tetris.pref.propPref.setProperty("theme", e.getItem().toString());
 					wasChange = true;
 				}
 			});
@@ -367,7 +350,8 @@ public class MainFrame extends JFrame {                       //It's Main window
 					
 					@Override
 					public void itemStateChanged(ItemEvent e) {
-						Tetris.changePref("Level", e.getItem().toString());
+						Tetris.pref.level = Levl.valueOf(e.getItem().toString());
+						Tetris.pref.propPref.setProperty("Level", e.getItem().toString());
 						wasChange = true;
 					}
 				});

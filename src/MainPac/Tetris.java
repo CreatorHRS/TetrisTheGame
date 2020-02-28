@@ -12,59 +12,35 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * 
- * Copyright (C) 2019 Mihail Harisov
+ * Copyright (C) 2019-2020 Mihail Harisov
  */
+
 
 package MainPac;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
+import javax.swing.*;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.concurrent.TimeUnit;
 
-public class Tetris { 
-	static Preference pref;
-	private static Path path;
-	
-	public static void main(String[] args) {             //Start program!!! 
-		pref = getPreference();                          //Get preference from file
-		MainFrame main = new MainFrame(pref.mainDimen);  //Create main window
+public class Tetris{
+	static Preference pref;	
+
+	public static void main(final String[] args){ // Start program!!!
+		LoadingWindow loadWindow = new LoadingWindow();
+		pref = Preference.initPref();
+		MainFrame main = new MainFrame();
 	}
 	
-	static Preference getPreference() {      //Function for get preference        
-		Properties p = new Properties();
-		path = null;
-		
-		try {
-			path = new File(Tetris.class.getProtectionDomain().getCodeSource()     //Get dir with game
-											.getLocation().toURI()).getParentFile().toPath();
-		} catch (URISyntaxException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			p.load(new FileInputStream(path  + "/Pref.cfg"));  //Load pref from Pref.cfg file
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return Preference.initPref(p, path);
-	}
-	
-	static void changePref(String key, String value) {           
-		pref = Preference.initPref(pref.changePropPref(key, value), path);
-	}
+	//static void changePref(String key, String value) {           
+		//pref.propPref.setProperty(key, value);
+	//}
 	
 	public static int persent(int num, int pro) {
 		float res = (float)num / 100;
@@ -93,30 +69,93 @@ public class Tetris {
 	    }
 	    return false;
 	}
- }
 
-class Preference{                                                 //Preference class
+}
+
+class LoadingWindow extends JFrame{
+	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	Dimension winDem = new Dimension(procent((int)screenSize.getWidth(), 40),
+												 procent((int)screenSize.getHeight(), 30));
+	/*loading line demension*/
+	Dimension llDem = new Dimension(procent(winDem.width, 60),  
+											procent(winDem.height, 10));
+	Container con = new Container();
+	Label lab = new Label("Loading");
+	int load = 50;
+
+	public LoadingWindow(){ 
+		setSize(winDem);
+		setLocationRelativeTo(null);
+		setUndecorated(true);
+		setBackground(new Color(88,63,61,255));
+		setVisible(true);
+	}
+
+	public void paint(Graphics g) {
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("DejaVu Sans Mono", 1, procent(winDem.height, 15)));
+		g.drawString("LOADING", procent(winDem.width, 40), procent(winDem.height, 30));
+		g.drawRect(procent(winDem.width, 50) - (llDem.width/2), 
+					procent(winDem.height, 70), llDem.width, llDem.height);
+		g.fillRect(procent(winDem.width, 50) - (llDem.width/2), procent(winDem.height, 70), procent(llDem.width, load), llDem.height);
+	}
+
+	public void load(int val){
+		load += val;
+		repaint();
+	}
+
+	private int procent(int num, int proc){
+		int temp = (num / 100) * proc;
+		System.out.printf("%d\n", temp);
+		return temp;
+	}
+}
+
+
+class Preference{
 	Dimension mainDimen = new Dimension(736, 667);                //Main window dimension
 	Dimension gameDimen = new Dimension(480, 640);                //Game window dimension
-	int dot_size = 0;                                             
-	String dir = "./";
-	int maxFps = 0;
-	String theme = " ";
+	int dot_size;                                            
+	String dir;
+	int maxFps;
+	String theme;
 	Levl level;
-	String backDir = null;
-	Properties propPref = null;
+	String backDir;
+	Properties propPref;
 	Color mainBackColor = new Color(88, 63, 61);
 	Color butBackColor = new Color(22, 12, 11, 200);
-	Color butForColor = null;
+	Color butForColor;
 	Font font = new Font("", 1, 25);
-	
-	private Preference(){
-	}
-	
-	static Preference initPref(Properties p, Path path) {//Assigns variable from property class   
-		Preference pref = new Preference();              //to preference class
-		pref.propPref = p;
-		pref.dir = path.toString();
+	Path path;
+	private static int def = 0;
+
+	private Preference(){}
+
+	public static Preference initPref(){
+		if(def == 1){
+			return null;
+		}
+
+		def = 1;
+		Preference pref = new Preference();  
+		/*Determine screen resolution*/
+		try {
+			pref.path = new File(Tetris.class.getProtectionDomain().getCodeSource()     //Get dir with game
+											.getLocation().toURI()).getParentFile().toPath();
+			pref.propPref = new Properties();
+			pref.propPref.load(new FileInputStream(pref.path  + "/Pref.cfg"));  //Load pref from Pref.cfg file
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}            //to preference class
+		pref.dir = pref.path.toString();
 		pref.dot_size = Integer.valueOf(pref.propPref.getProperty("dot_size"));
 		pref.maxFps = Integer.valueOf(pref.propPref.getProperty("FPS"));
 		pref.level = Levl.valueOf(pref.propPref.getProperty("Level"));
@@ -158,14 +197,9 @@ class Preference{                                                 //Preference c
 		
 		return pref;                             //Return preference class 
 	}
-	
-	Properties changePropPref(String key, String value) { //Change preference in memory (not in file)
-		propPref.setProperty(key, value);
-		return propPref;
-		
-	}
-	
+
 }
+
 
 enum Levl{                        
 	level1(500, 0), level2(450, 1), level3(400,2), level4(350, 3), level5(300, 4);
